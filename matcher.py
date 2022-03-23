@@ -1,5 +1,7 @@
 from models import OrganizedStreams
 
+# The functions below were grabbed from the awesome plex_set_tracks project
+# which can be found here https://github.com/gstacks13/plex_set_tracks.
 
 # Find closest Audio Stream match in a specific episode, given some AudioStreamInfo template
 def match_audio(episodePart, template):

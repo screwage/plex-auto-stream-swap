@@ -6,6 +6,9 @@ class ClientMediaInfo:
         self.subtitle_template = subtitle_template
 
 
+# The classes below were grabbed from the awesome plex_set_tracks project
+# which can be found here https://github.com/gstacks13/plex_set_tracks.
+
 class AudioStreamInfo:
     """ Container class to hold info about an AudioStream
         Attributes:

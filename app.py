@@ -5,17 +5,16 @@ import configparser
 from plexapi.server import PlexServer
 from clients import clients, check_client, update_client
 
-plex, delay = None, None
+plex = None
 
 
 def load_config(file_path):
-    global plex, delay, enable_debugging
+    global plex
 
     config = configparser.ConfigParser()
     config.read(file_path)
 
     enable_debugging = config['APP']['debug']
-    delay = int(config['APP']['delay'])
 
     # Configure Logging
     logging_level = logging.DEBUG if enable_debugging == 'True' else logging.INFO
@@ -30,7 +29,7 @@ def load_config(file_path):
 
     plex = PlexServer(base_url, plex_api_token)
     logging.info(
-        f"Connected to Plex Server at {plex_ip}:{plex_port}. Polling updates every {delay} seconds.")
+        f"Connected to Plex Server at {plex_ip}:{plex_port}.")
 
 
 def process_playing(data):
@@ -61,14 +60,13 @@ def process_playing(data):
 
 def main():
     load_config("config.ini")
-    logging.info('Handling streams...')
 
     try:
         listener = plex.startAlertListener(callback=process_playing)
         while True:
-            time.sleep(delay)
+            time.sleep(1)
     except KeyboardInterrupt:
-        logging.info('Shutting down')
+        logging.info('Shutting down Listener.')
         listener.stop()
 
 
