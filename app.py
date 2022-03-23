@@ -2,14 +2,14 @@
 import time
 import logging
 import configparser
-from plexapi.server import PlexServer
 from clients import clients, check_client, update_client
+from plex_accessor import PlexInstance
 
-plex = None
+plex_instance = None
 
 
 def load_config(file_path):
-    global plex
+    global plex_instance
 
     config = configparser.ConfigParser()
     config.read(file_path)
@@ -27,13 +27,13 @@ def load_config(file_path):
     base_url = f'http://{plex_ip}:{plex_port}'
     plex_api_token = config['PLEX']['api_token']
 
-    plex = PlexServer(base_url, plex_api_token)
+    plex_instance = PlexInstance(base_url, plex_api_token)
     logging.info(
-        f"Connected to Plex Server at {plex_ip}:{plex_port}.")
+        f"Connected to Plex Server at {base_url}.")
 
 
 def process_playing(data):
-    global clients
+    global clients, plex_instance
 
     if data['type'] != 'playing':
         return
@@ -42,9 +42,15 @@ def process_playing(data):
     # A rating key will uniquely identify an episode in the case of a show.
     data = data['PlaySessionStateNotification'][0]
     rating_key = int(data['ratingKey'])
-    episode = plex.fetchItem(rating_key)
+    episode = plex_instance.get_episode_from_rating_key(rating_key)
 
     if episode.type != 'episode':
+        return
+
+    session_key = data['sessionKey']
+    session = plex_instance.get_session_from_session_key(session_key)
+
+    if plex_instance.get_username() not in session.usernames:
         return
 
     # Whenever a new client starts watching,
@@ -62,7 +68,7 @@ def main():
     load_config("config.ini")
 
     try:
-        listener = plex.startAlertListener(callback=process_playing)
+        listener = plex_instance.get_plex().startAlertListener(callback=process_playing)
         while True:
             time.sleep(1)
     except KeyboardInterrupt:

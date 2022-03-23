@@ -1,8 +1,38 @@
 import logging
-
+from plexapi.server import PlexServer
 from matcher import match_audio, matchSubtitles
 from logging_helper import episode_to_str, log_substitle_reset_success, log_success
 from models import AudioStreamInfo, SubtitleStreamInfo
+
+
+class PlexInstance:
+    def __init__(self, base_url, api_token):
+        self.plex = PlexServer(base_url, api_token)
+        self.plex_username = self.plex.myPlexAccount()
+
+    def get_plex(self):
+        return self.plex
+
+    def get_username(self):
+        return self.plex_username
+
+    def get_episode_from_rating_key(self, rating_key):
+        episode = self.plex.fetchItem(rating_key)
+        return episode
+
+    def get_session_from_session_key(self, session_key):
+        session = next(
+            (session for session in self.plex.sessions() if int(session.sessionKey) == int(session_key)), None)
+
+        if session == None:
+            logging.warning(
+                f"Couldn't find session with sessionKey {session_key}. Attempting to reload PlexServer instance and try again.")
+
+            self.plex.reload()
+            session = next(
+                (session for session in self.plex.sessions() if int(session.sessionKey) == int(session_key)), None)
+
+        return session
 
 
 # Update Audio and Subtitles for an Entire Season
