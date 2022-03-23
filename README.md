@@ -27,3 +27,4 @@ Make sure you have Python 3 installed before continuing.
 - Add logging to file
 - Improve logging to include client identifier
 - Rename this project to... literally anything else
+- Check that the sessions picked up belong to the current user
