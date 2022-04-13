@@ -19,6 +19,15 @@ Make sure you have Python 3 installed before continuing.
 3. Run `pip install -r requirements.txt` to install the required modules. You can do this in a [virtual environment](https://docs.python.org/3/tutorial/venv.html) as well.
 4. Run `app.py`. Having the script run at startup is ideal, but I haven't tried that just yet.
 
+## Docker Setup & Installation (Optional)
+If you want to run this within a docker container, it's pretty straightforward.
+
+1. Clone this repository using `git clone`.
+2. Modify `config.ini` to match your setup.
+    - It's recommended to keep the script locally on your plex server. The script executes much faster.
+    - For help with finding your plex token, visit [here](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/)
+3. Build the docker image using `docker build -t screwage/plex-scripts:auto-stream-swap .`
+4. Start up and run the container using `docker container run -d --name plex-stream-swap screwage/plex-scripts:auto-stream-swap`
 
 # TODO
 - Clean up stale sessions
