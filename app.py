@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import sys
 import time
 import logging
 import configparser
@@ -12,7 +13,8 @@ def load_config(file_path):
     global plex
 
     config = configparser.ConfigParser()
-    config.read(file_path)
+    if len(config.read(file_path)) == 0:
+        sys.exit(f"No config file named \"{file_path}\" could be found.")
 
     enable_debugging = config['APP']['debug']
 
@@ -58,11 +60,14 @@ def process_playing(data):
     check_client(client_id, rating_key, episode)
 
 
+def handle_error(error):
+    sys.exit('Listener ran into an error. Stopping script. Error: ' + error)
+
 def main():
     load_config("config.ini")
 
     try:
-        listener = plex.startAlertListener(callback=process_playing)
+        listener = plex.startAlertListener(callback=process_playing, callbackError=handle_error)
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
