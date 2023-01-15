@@ -28,7 +28,7 @@ If you want to run this within a docker container, it's pretty straightforward.
     - In the case of docker for Windows, you can use `host.docker.internal` as your plex host.
     - For help with finding your plex token, visit [here](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/)
 3. Build the docker image using `docker build -t screwage/plex-scripts:auto-stream-swap .`
-4. Start up and run the container using `docker container run -d -e PLEX_API_TOKEN=<PLEX_TOKEN_HERE> --name plex-stream-swap screwage/plex-scripts:auto-stream-swap`
+4. Start up and run the container using `docker container run -d -e PLEX_API_TOKEN=<PLEX_TOKEN_HERE> --restart always --name plex-stream-swap screwage/plex-scripts:auto-stream-swap`
 
 # TODO
 - Clean up stale sessions
