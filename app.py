@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import sys
+import os
 import time
 import logging
 import configparser
@@ -12,7 +13,7 @@ plex = None
 def load_config(file_path):
     global plex
 
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(os.environ)
     if len(config.read(file_path)) == 0:
         sys.exit(f"No config file named \"{file_path}\" could be found.")
 
@@ -27,7 +28,10 @@ def load_config(file_path):
     plex_ip = config['PLEX']['host']
     plex_port = config['PLEX']['port']
     base_url = f'http://{plex_ip}:{plex_port}'
-    plex_api_token = config['PLEX']['api_token']
+    try:
+        plex_api_token = config['PLEX']['api_token']
+    except:
+        sys.exit("Missing Plex API Token. Modifiy config.ini or set environment variable PLEX_API_TOKEN.")
 
     plex = PlexServer(base_url, plex_api_token)
     logging.info(

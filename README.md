@@ -23,12 +23,12 @@ Make sure you have Python 3 installed before continuing.
 If you want to run this within a docker container, it's pretty straightforward.
 
 1. Clone this repository using `git clone`.
-2. Modify `config.ini` to match your setup.
+2. Modify `config.ini` to match your setup. Leave the Plex API Token field as-is if you want to use environment variables.
     - It's recommended to keep the script locally on your plex server. The script executes much faster.
     - In the case of docker for Windows, you can use `host.docker.internal` as your plex host.
     - For help with finding your plex token, visit [here](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/)
 3. Build the docker image using `docker build -t screwage/plex-scripts:auto-stream-swap .`
-4. Start up and run the container using `docker container run -d --name plex-stream-swap screwage/plex-scripts:auto-stream-swap`
+4. Start up and run the container using `docker container run -d -e PLEX_API_TOKEN=<PLEX_TOKEN_HERE> --name plex-stream-swap screwage/plex-scripts:auto-stream-swap`
 
 # TODO
 - Clean up stale sessions
